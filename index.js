@@ -38,7 +38,7 @@ app.post('/initiate-payment', async (req, res) => {
       payload
     );
 
-    if (response.data?.status === 'SUCCESS') {
+    if (response.data?.status === 'VALID') {
       res.json({ GatewayPageURL: response.data.GatewayPageURL });
     } else {
       res.status(400).json({
