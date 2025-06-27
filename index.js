@@ -41,6 +41,7 @@ app.post('/initiate-payment', async (req, res) => {
     num_of_item: 1,
     product_name: 'Subscription',
     product_category: 'Services',
+    product_profile: 'general',
   };
 
   try {
