@@ -59,7 +59,7 @@ app.post('/initiate-payment', async (req, res) => {
 
     console.log('SSLCOMMERZ response:', response.data);
 
-    if (response.data?.status === 'VALID') {
+    if (response.data?.status === 'SUCCESS') {
       return res.json({ GatewayPageURL: response.data.GatewayPageURL });
     } else {
       return res.status(400).json({
