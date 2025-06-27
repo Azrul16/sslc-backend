@@ -1,6 +1,7 @@
 {
     "name": "sslc-backend",
     "version": "1.0.0",
+    "description": "SSLCOMMERZ payment API backend for Flutter Web",
     "main": "index.js",
     "scripts": {
       "start": "node index.js"

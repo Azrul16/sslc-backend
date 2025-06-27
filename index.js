@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
-app.use(cors()); // Allow requests from Flutter web
+app.use(cors()); // Allow requests from any origin (Flutter web)
 app.use(express.json());
 
 app.post('/initiate-payment', async (req, res) => {
@@ -15,9 +15,9 @@ app.post('/initiate-payment', async (req, res) => {
     total_amount: amount,
     currency: 'BDT',
     tran_id: `TXN_${Date.now()}`,
-    success_url: 'https://yourdomain.com/success',
-    fail_url: 'https://yourdomain.com/fail',
-    cancel_url: 'https://yourdomain.com/cancel',
+    success_url: 'https://sslc.onrender.com/success',
+    fail_url: 'https://sslc.onrender.com/fail',
+    cancel_url: 'https://sslc.onrender.com/cancel',
     emi_option: 0,
     cus_name: 'Test User',
     cus_email: email,
@@ -26,6 +26,10 @@ app.post('/initiate-payment', async (req, res) => {
     cus_city: 'Dhaka',
     cus_postcode: '1212',
     cus_country: 'Bangladesh',
+    shipping_method: 'NO',
+    num_of_item: 1,
+    product_name: 'Premium Access',
+    product_category: 'Subscription',
   };
 
   try {
@@ -33,11 +37,32 @@ app.post('/initiate-payment', async (req, res) => {
       'https://sandbox.sslcommerz.com/gwprocess/v4/api.php',
       payload
     );
-    res.json({ GatewayPageURL: response.data.GatewayPageURL });
+
+    if (response.data?.status === 'SUCCESS') {
+      res.json({ GatewayPageURL: response.data.GatewayPageURL });
+    } else {
+      res.status(400).json({
+        error: 'Failed to generate payment URL',
+        debug: response.data,
+      });
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to initiate payment.' });
+    console.error('Payment error:', err.message);
+    res.status(500).json({ error: 'Server error while initiating payment.' });
   }
+});
+
+// Optional: simple confirmation pages for browser redirect
+app.get('/success', (req, res) => {
+  res.send('<h2>✅ Payment Successful</h2><p>You may now close this window.</p>');
+});
+
+app.get('/fail', (req, res) => {
+  res.send('<h2>❌ Payment Failed</h2><p>Please try again later.</p>');
+});
+
+app.get('/cancel', (req, res) => {
+  res.send('<h2>⚠️ Payment Cancelled</h2><p>You cancelled the payment process.</p>');
 });
 
 const PORT = process.env.PORT || 3000;
