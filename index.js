@@ -55,7 +55,7 @@ app.post('/initiate-payment', async (req, res) => {
       }
     );
 
-    if (response.data?.status === 'SUCCESS') {
+    if (response.data?.status === 'VALID') {
       // Store status as pending (in memory for demo)
       paymentStatusMap[tran_id] = 'PENDING';
 
